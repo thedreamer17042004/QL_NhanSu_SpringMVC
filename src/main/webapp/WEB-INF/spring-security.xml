@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+xmlns="http://www.springframework.org/schema/security"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:beans="http://www.springframework.org/schema/beans"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+<http auto-config="true">
+	<csrf disabled="true"/>
+<!-- cấu hình các vai trò truy cập -->
+	<intercept-url pattern="/resources/**" access="permitAll" />
+	<intercept-url pattern="/admin1/**" access="hasRole('ROLE_ADMIN')" />
+	<intercept-url pattern="/student/**" access="hasRole('ROLE_USER')" />
+	
+	<!-- trang cấm truy cập -->
+	<access-denied-handler error-page="/errorpage/403" />
+	<!-- cấu hình form login -->
+	<form-login login-page="/login"
+		login-processing-url="/loginProcess"
+		default-target-url="/checkrole"
+		authentication-failure-url="/login?error"
+		username-parameter="email"
+		password-parameter="password" />
+	<logout logout-url="/logout" logout-success-url="/logoutSuccess" delete-cookies="JSESSIONID" />
+	
+</http>
+	
+	<!--
+
+- cấu hình service xác định người dùng
+
+- passwordEncoder là đối tượng mã hóa mật khẩu,
+
+- accountDetailsService là đối tượng của lớp AccountDetailsService
+
+-->
+	<authentication-manager>
+	
+		<authentication-provider user-service-ref="accountDetailsService">
+		
+			<password-encoder ref="passwordEncoder" />
+	
+		</authentication-provider>
+
+	</authentication-manager>
+</beans:beans>

@@ -1,0 +1,35 @@
+.css-checkbox {
+	margin-left: 20px
+}
+.error {
+	color: red;
+}
+.box-tools {
+	display: flex;
+}
+.select2-container .select2-selection--single{
+	height: 31px;
+}
+.dropdown-menu1 {
+	position: absolute;
+	right: 10px;
+	background-color: #f8f1f1;
+	padding: 16px;
+	border-radius: 10px;
+	display: none;
+	z-index: 100;
+}
+ul {
+	list-style: none;
+}
+.hover_event:hover .dropdown-menu1{
+	display: block;
+	    transition-delay:1s;
+	
+	
+}
+
+.active-bg{
+	background-color: yellow;
+    border-color: #000000;
+}

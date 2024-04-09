@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+	<!-- chỉ ra các package chứa các lớp java được đăng ký như là các bean -->
+	<context:component-scan
+		base-package="com.controllers,com.services,com.repositories" />
+	<!-- chỉ tìm kiếm các bean trong cùng context application mà nó được định 
+		nghĩa -->
+	<context:annotation-config />
+	<!-- mặc định các basic components được ủy quyền gửi request tới các controller -->
+	<mvc:annotation-driven />
+	<!-- Cấu hình đường dẫn tài nguyên được phép truy cập -->
+	<mvc:resources mapping="/**" location="/resources/" />
+
+	<!-- Tạo bean xác định view sẽ được sinh ra (thư mục chứa các view, đuôi tệp tin view) -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:prefix="/WEB-INF/views/" p:suffix=".jsp" />
+	<!-- Tạo đối tượng bean dataSource kết nối database oracle -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="com.microsoft.sqlserver.jdbc.SQLServerDriver"></property>
+		<property name="url"
+			value="jdbc:sqlserver://localhost:1433;databaseName=BtlSem2;Encrypt=True;trustServerCertificate=True"></property>
+		<property name="username" value="sa"></property>
+		<property name="password" value="1234"></property>
+	</bean>
+	<!-- Tạo đối tượng bean sessionFactory cấu hình Hibernate -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="packagesToScan" value="com.entities"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.current_session_context_class">thread</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.SQLServer2008Dialect</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- bean mã hóa mật khẩu với tham số strength là 12 -->
+	<bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+		<constructor-arg name="strength" value="12"></constructor-arg>
+	</bean>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+	
+		<!-- tạo bean tham chiếu đến tệp tin định nghĩa các message ngôn ngữ -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="Language" />
+	</bean>
+	
+	<!-- tạo bean local default là tiếng anh -->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+	
+	<property name="defaultLocale" value="vi_VN" />
+	
+	</bean>
+	
+	<!-- tạo bean interceptor để xác định sự thay đổi ngôn ngữ -->
+	
+	<mvc:interceptors>
+	
+	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+	
+	<property name="paramName" value="lang" />
+	
+	</bean>
+	</mvc:interceptors>
+
+
+	
+</beans>
